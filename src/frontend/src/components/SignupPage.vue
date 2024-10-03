@@ -8,23 +8,21 @@
         <a href="#">Home</a>
         <a href="#">Contact Us</a>
       </div>
-      <div class="profile-container">
-        <!-- Profile-related UI elements can go here -->
-      </div>
     </nav>
 
     <div class="form-container">
       <form @submit.prevent="signup">
         <div class="input-group">
           <input type="text" v-model="firstName" placeholder="First name" required />
+          <input type="text" v-model="middleName" placeholder="Middle name" />
+        </div>
+        <div class="input-group">
           <input type="text" v-model="lastName" placeholder="Last name" required />
-        </div>
-        <div class="input-group">
           <input type="text" v-model="phoneNumber" placeholder="Cell number" required />
-          <input type="email" v-model="email" placeholder="Email" required />
         </div>
         <div class="input-group">
-          <input type="date" v-model="dateOfBirth" placeholder="Date of birth" required />
+          <input type="email" v-model="email" placeholder="Email" required />
+          <input type="date" v-model="dateOfBirth" required />
         </div>
         <div class="address-section">
           <label>Address:</label>
@@ -38,8 +36,14 @@
           </div>
         </div>
         <div class="input-group">
+          <!-- Removed the titles for role and gender, and placed them on the same row -->
+          <select v-model="userRole" required>
+            <option value="" disabled selected>Select role</option>
+            <option value="student">Student</option>
+            <option value="landlord">Landlord</option>
+          </select>
           <select v-model="gender" required>
-            <option value="" disabled selected>Gender</option>
+            <option value="" disabled selected>Select gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
@@ -68,6 +72,7 @@ export default {
   data() {
     return {
       firstName: '',
+      middleName: '',
       lastName: '',
       phoneNumber: '',
       email: '',
@@ -80,6 +85,7 @@ export default {
       password: '',
       confirmPassword: '',
       agreeToTerms: false,
+      userRole: '', // New property for selecting role
     };
   },
   methods: {
@@ -94,50 +100,63 @@ export default {
         return;
       }
 
-      const student = {
+      const user = {
         firstName: this.firstName,
+        middleName: this.middleName,
         lastName: this.lastName,
-        phoneNumber: this.phoneNumber,
-        email: this.email,
+        gender: this.gender.charAt(0).toUpperCase() + this.gender.slice(1),
         dateOfBirth: this.dateOfBirth,
-        address: {
-          street: this.street,
-          suburb: this.suburb,
-          city: this.city,
-          postalCode: this.postalCode,
-        },
-        gender: this.gender,
         password: this.password,
+        contact: {
+          address: {
+            street: this.street,
+            suburb: this.suburb,
+            city: this.city,
+            postalCode: this.postalCode,
+          },
+          email: this.email,
+          phoneNumber: this.phoneNumber,
+        },
       };
 
+      let url = '';
+
+      // Determine the URL based on the selected role
+      if (this.userRole === 'student') {
+        url = 'http://localhost:8080/StudentHomeBas/student/save';
+      } else if (this.userRole === 'landlord') {
+        url = 'http://localhost:8080/StudentHomeBas/landlord/save';
+      }
+
       try {
-        const response = await fetch('/student/save', { // Direct URL without /api
+        const response = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(student),
+          body: JSON.stringify(user),
         });
 
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Network response was not ok');
         }
 
         const data = await response.json();
-        console.log('Saved Student:', data);
+        console.log('Saved user:', data);
         alert('Signup successful!');
-        // Optionally, redirect the user after successful signup
-        // this.$router.push('/loginPage');
+        this.$router.push('/loginPage');
       } catch (error) {
         console.error('There was an error during signup:', error);
-        alert('Signup failed. Please try again.');
+        alert(`Signup failed: ${error.message}`);
       }
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
+/* Styling remains the same */
 .signup-page {
   height: 100vh;
   margin: 0;
@@ -184,17 +203,6 @@ export default {
   font-weight: bold;
 }
 
-.profile-container {
-  flex-shrink: 0;
-  margin-right: 80px;
-}
-
-.profile-pic {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-}
-
 .form-container {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 20px;
@@ -221,15 +229,8 @@ select {
   border-radius: 4px;
 }
 
-.address-section label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-}
-
 .terms {
   margin: 15px 0;
-  font-size: 14px;
 }
 
 .signup-btn {
@@ -240,7 +241,6 @@ select {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
 }
 
 .signup-btn:hover {
@@ -250,6 +250,5 @@ select {
 .login-link {
   text-align: center;
   margin-top: 15px;
-  font-size: 14px;
 }
 </style>
