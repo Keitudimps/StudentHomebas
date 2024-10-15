@@ -53,4 +53,28 @@ public class LandlordFactory {
                 .buildLandlord();
 
     }
+
+    public static Landlord buildLandlordWithMiddleName( String firstName, String middleName, String lastName, String gender, LocalDate dateOfBirth, int numOfPropertiesOwned, String password, Contact contact, List<Document> documents){
+        if( Helper.isNullOrEmpty(firstName) || Helper.isNullOrEmpty(middleName) || Helper.isNullOrEmpty(lastName)
+                || numOfPropertiesOwned<=0 || Helper.isNullOrEmpty(gender) || Helper.isInvalidDate(dateOfBirth) || Helper.isNullOrEmpty(password) || contact == null
+                || Helper.isListNullorEmpty(documents)){
+            return null;
+        }
+        Name name = new Name.NameBuilder().setFirstName(firstName)
+                .setLastName(lastName)
+                .setMiddleName(middleName)
+                .build();
+        return new Landlord.LandlordBuilder()
+                .setName(name)
+                .setGender(gender)
+                .setDateOfBirth(dateOfBirth)
+                .setNumOfPropertiesOwned(numOfPropertiesOwned)
+                .setPassword(password)
+                .setContact(contact)
+                .setDocuments(documents)
+                .buildLandlord();
+
+    }
+
+
 }

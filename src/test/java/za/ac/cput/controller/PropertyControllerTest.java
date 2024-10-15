@@ -1,13 +1,13 @@
 package za.ac.cput.controller;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.annotation.Order;
+
 import org.springframework.http.*;
 import za.ac.cput.domain.*;
 import za.ac.cput.factory.*;
@@ -34,15 +34,14 @@ class PropertyControllerTest {
 
     private final String BASE_URL = "http://localhost:8080/StudentHomeBas/Property";
 
-    @Autowired
-    private DocumentRepository documentRepository;
-
-    @Autowired
-    private LandlordRepository landlordRepository;
 
     private Property property1;
     private  Property property2;
-    private Landlord landlord1;
+
+    private static Property savedproperty1;
+    private static Property savedproperty2;
+    private   Landlord landlord1;
+    private Landlord landlord2;
     List<Document> documentList = new ArrayList<>();
     List<Document> pictures = new ArrayList<>();
     static BufferedImage image;
@@ -66,21 +65,27 @@ class PropertyControllerTest {
 
         byte[] photoData = out.toByteArray();
 
-        document1 = DocumentFactory.buildDocument(001L,"MikeSeptemeberCopyOfID", photoData, LocalDateTime.of(LocalDate.of(2024,04,11), LocalTime.of(11,14)));
+        document1 = DocumentFactory.buildDocument("MikeSeptemeberCopyOfID", photoData, LocalDateTime.of(LocalDate.of(2024,04,11), LocalTime.of(11,14)));
         System.out.println(document1);
         documentList.add(document1);
 
         Address address1= AddressFactory.buildAddress("9 Lower Street", "Mowbray", "Cape Town", "5100");
-        Contact contact = ContactFactory.createContact("0786549009", "mikes@gmail.com", address1);
+        Contact contact = ContactFactory.createContact("0786549009", "mikes7@gmail.com", address1);
+
         landlord1 = LandlordFactory.buildLandlordWithMiddleName(88987L, "Mike", "Matic",
                 "September", "Male", LocalDate.of(1986,8,13), 3,
                 "Mike130886",contact,documentList);
+        Contact contact2 = ContactFactory.createContact("0786549009", "mikes8@gmail.com", address1);
 
-        property1 = PropertyFactory.buildProperty("PR01", "South Point", 10,5000,
-                "143", "Dorset St", "Woodstock", "Cape Town", landlord1, documentList);
+        landlord2 = LandlordFactory.buildLandlordWithMiddleName(88987L, "Mike", "Matic",
+                "September", "Male", LocalDate.of(1986,8,13), 3,
+                "Mike130886",contact2,documentList);
 
-        property2 = PropertyFactory.buildProperty("PR02", "South Point", 10,3500,
-                "10", "Sir Lowry Rd", "GoodWood", "Cape Town", landlord1, documentList);
+        property1 = PropertyFactory.buildProperty("South Point", 10,5000,
+                 "10 Dorset St", "Woodstock", "Cape Town", "8001",landlord1, documentList, StatusFactory.createPendingStatus());
+
+        property2 = PropertyFactory.buildProperty( "New Market Junction", 80,3500,
+                "143 Sir Lowry Rd", "GoodWood", "Cape Town","8001",  landlord2, documentList, StatusFactory.createApprovedStatus());
 
     }
 
@@ -92,18 +97,26 @@ class PropertyControllerTest {
         assertNotNull(response);
         assertNotNull(response.getBody());
         System.out.println("Saved Property details: " + response.getBody());
+        savedproperty1 = response.getBody();
+        System.out.println(savedproperty1);
+
 
         ResponseEntity<Property> response2 = restTemplate.postForEntity(url, property2, Property.class);
         assertNotNull(response2);
         assertNotNull(response2.getBody());
         System.out.println("Saved Property 2 details: " + response2.getBody());
+        savedproperty2 = response2.getBody();
+        System.out.println(savedproperty2);
     }
 
 
     @Test
     @Order(2)
     void read() {
-        String url = BASE_URL + "/read/" + property1.getPropertyID();
+
+        String url = BASE_URL + "/read/" + savedproperty1.getPropertyID();
+        String url2 = BASE_URL + "/read/" + 4;
+        System.out.println("Read Link: " + url);
 
         ResponseEntity<Property> response = restTemplate.getForEntity(url, Property.class);
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -125,7 +138,7 @@ class PropertyControllerTest {
     void update() {
         String url = BASE_URL + "/update";
         Property update = new Property.Builder()
-                .copy(property2)
+                .copy(savedproperty2)
                 .setPropertyName("Rise")
                 .build();
 
@@ -143,7 +156,7 @@ class PropertyControllerTest {
     @Test
     @Order(4)
     void delete() {
-        String url = BASE_URL + "/delete/" + property1.getPropertyID();
+        String url = BASE_URL + "/delete/" + savedproperty1.getPropertyID();
         restTemplate.delete(url);
     }
 

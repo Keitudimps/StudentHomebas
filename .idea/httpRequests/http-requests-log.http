@@ -1,0 +1,30 @@
+POST http://localhost:8080/StudentHomeBas/AcademicDetails/create
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.1.4
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+content-length: 0
+
+<> 2024-07-22T154400.400.json
+
+###
+
+POST http://localhost:8080/StudentHomeBas/AcademicDetails/create
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.1.4
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+content-length: 0
+
+<> 2024-07-22T154333.400.json
+
+###
+
+POST http://localhost:8080/StudentHomeBas/AcademicDetails/create
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.1.4
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+content-length: 0
+
+<> 2024-07-22T154306.400.json
+
+###
+

@@ -61,7 +61,7 @@
 
 <script>
 export default {
-  name: 'App',
+  name: 'AdminLayout',
 };
 </script>
 

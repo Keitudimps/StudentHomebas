@@ -51,8 +51,8 @@ class AddressServiceTest {
     @Test
     @Order(2)
     void read() {
-        AddressId addressId = new AddressId(address1.getStreet(), address1.getPostalCode());
-        Address readAddress = service.read(addressId);
+        //AddressId addressId = new AddressId(address1.getStreet(), address1.getPostalCode());
+        Address readAddress = service.read(address1.getAddressID());
         assertNotNull(readAddress);
         System.out.println(readAddress);
     }
@@ -72,8 +72,8 @@ class AddressServiceTest {
     @Test
     @Order(4)
     void deleteById() {
-        AddressId addressId = new AddressId(address1.getStreet(), address1.getPostalCode());
-        boolean deleted = service.deleteById(addressId);
+        //AddressId addressId = new AddressId(address1.getStreet(), address1.getPostalCode());
+        boolean deleted = service.deleteById(address1.getAddressID());
         assertTrue(deleted);
         System.out.println("Address deleted");
     }

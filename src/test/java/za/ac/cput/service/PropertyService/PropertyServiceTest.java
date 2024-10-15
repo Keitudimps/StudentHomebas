@@ -1,11 +1,9 @@
 package za.ac.cput.service.PropertyService;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import za.ac.cput.domain.*;
 import za.ac.cput.factory.*;
 import za.ac.cput.repository.DocumentRepository;
@@ -30,28 +28,25 @@ class PropertyServiceTest {
     @Autowired
     private PropertyService service;
 
-    @Autowired
-    private DocumentRepository documentRepository;
-
-    @Autowired
-    private LandlordRepository landlordRepository;
-
-    private Property property1;
+    private  Property property1;
     private  Property property2;
-    private Landlord landlord1;
-    List<Document> documentList = new ArrayList<>();
-    List<Document> pictures = new ArrayList<>();
+    private  Landlord landlord1;
+     List<Document> documentList = new ArrayList<>();
+     List<Document> pictures = new ArrayList<>();
     static BufferedImage image;
     static ByteArrayOutputStream out;
-    Document document1;
+     Document document1;
+
+     static  Property saved1;
+     static Property saved2;
+
 
     @BeforeEach
-    void setUp() {
+     void  a_setUp() {
         String url = "download.jpeg";
 
         //String certificate  = "C:\\Users\\ASUS\\Documents\\3rd-Year\\ADP3\\StudentHomebas\\LinkedIn Learning Certificate.pdf";
         try {
-
             image = ImageIO.read(new File(url));
             out = new ByteArrayOutputStream();
             ImageIO.write(image, "jpeg", out);
@@ -62,51 +57,49 @@ class PropertyServiceTest {
 
         byte[] photoData = out.toByteArray();
 
-         document1 = DocumentFactory.buildDocument(001L,"MikeSeptemeberCopyOfID", photoData, LocalDateTime.of(LocalDate.of(2024,04,11), LocalTime.of(11,14)));
-        System.out.println(document1);
+         document1 = DocumentFactory.buildDocument("MikeSeptemeberCopyOfID", photoData, LocalDateTime.of(LocalDate.of(2024,04,11), LocalTime.of(11,14)));
         documentList.add(document1);
 
         Address address1= AddressFactory.buildAddress("9 Lower Street", "Mowbray", "Cape Town", "5100");
-        Contact contact = ContactFactory.createContact("0786549009", "mikes@gmail.com", address1);
-        landlord1 = LandlordFactory.buildLandlordWithMiddleName(88987L, "Mike", "Matic",
+        Contact contact = ContactFactory.createContact("0786549009", "mikerg09@gmail.com", address1);
+        landlord1 = LandlordFactory.buildLandlordWithMiddleName( "Mike", "Matic",
                 "September", "Male", LocalDate.of(1986,8,13), 3,
                 "Mike130886",contact,documentList);
 
-        property1 = PropertyFactory.buildProperty("PR01", "South Point", 10,5000,
-                "143", "Dorset St", "Woodstock", "Cape Town", landlord1, documentList);
+        property1 = PropertyFactory.buildProperty("South Point", 10,5000,
+                "10 Dorset St", "Woodstock", "Cape Town", "8001",landlord1, documentList, StatusFactory.createPendingStatus());
 
-        property2 = PropertyFactory.buildProperty("PR02", "South Point", 10,3500,
-                "10", "Sir Lowry Rd", "GoodWood", "Cape Town", landlord1, documentList);
-
-    }
+        property2 = PropertyFactory.buildProperty( "New Market Junction", 80,3500,
+                "143 Sir Lowry Rd", "GoodWood", "Cape Town","8001",  landlord1, documentList, StatusFactory.createApprovedStatus());
+ }
 
 
     @Test
-    void create() {
-        documentRepository.save(document1);
-        landlordRepository.save(landlord1);
+    @Order(1)
+    void b_create() {
+        saved1 = service.save(property1);
+       assertNotNull(saved1);
+       System.out.println("Saved Property: " + saved1);
 
-        Property saved1 = service.save(property1);
-        assertNotNull(saved1);
-        System.out.println("Saved Property: " + saved1);
-
-        Property saved2 = service.save(property2);
-        assertNotNull(saved2);
+        saved2 = service.save(property2);
+       assertNotNull(saved2);
         System.out.println("Saved Property: " + saved2);
 
     }
 
     @Test
-    void read() {
-        Property read = service.read(property1.getPropertyID());
+    @Order(2)
+    void c_read() {
+        Property read = service.read(saved1.getPropertyID());
         assertNotNull(read);
         System.out.println("Read Property: " + read);
     }
 
     @Test
-    void update() {
+    @Order(3)
+    void d_update() {
             Property update = new Property.Builder()
-                    .copy(property2)
+                    .copy(saved2)
                     .setPropertyName("Rise")
                     .build();
 
@@ -116,13 +109,17 @@ class PropertyServiceTest {
     }
 
     @Test
-    void delete() {
+    @Order(4)
+    void e_delete() {
+        System.out.println("Property To be deleted: " + saved1.getPropertyID());
         Boolean deleted = service.deleteById(property1.getPropertyID());
+
         assertEquals(true, deleted);
     }
 
     @Test
-    void getAll() {
+    @Order(5)
+    void e_getAll() {
         System.out.println(service.getAll());
     }
 }

@@ -19,4 +19,25 @@ public class DocumentFactory {
               .setDateTimeUploaded(dateTimeUploaded)
               .build();
     }
+
+    public static Document buildDocument( String documentName, byte[]fileContents, LocalDateTime dateTimeUploaded ){
+        if(Helper.isNullOrEmpty(documentName)||Helper.isByteArrayNull(fileContents)||Helper.isInvalidDateTime(dateTimeUploaded)){
+            return null;
+        }
+        return new Document.Builder()
+                .setDocumentName(documentName)
+                .setFileContents(fileContents)
+                .setDateTimeUploaded(dateTimeUploaded)
+                .build();
+    }
+    public static Document buildDocument( String documentName, byte[]fileContents ){
+        if(Helper.isNullOrEmpty(documentName)||Helper.isByteArrayNull(fileContents)){
+            return null;
+        }
+        return new Document.Builder()
+                .setDocumentName(documentName)
+                .setFileContents(fileContents)
+                .build();
+    }
 }
+

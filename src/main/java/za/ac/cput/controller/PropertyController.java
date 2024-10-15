@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.Property;
+import za.ac.cput.domain.RejectionRequest;
 import za.ac.cput.service.PropertyService.PropertyService;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class PropertyController {
     }
 
     @GetMapping("/read/{id}")
-    public ResponseEntity read(@PathVariable String id) {
+    public ResponseEntity read(@PathVariable Long id) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -37,9 +38,31 @@ public class PropertyController {
         return propertyService.update(property);
     }
 
-    @PostMapping("/delete/{id}")
-    public Boolean delete(@PathVariable String id) {
+    @DeleteMapping("/delete/{id}")
+    public Boolean delete(@PathVariable Long id) {
         return propertyService.deleteById(id);
+    }
+
+    public ResponseEntity<Property> approveProperty(@PathVariable Long propertyId) {
+        Property approvedProperty = propertyService.approveProperty(propertyId);
+
+        if (approvedProperty == null) {
+            return ResponseEntity.notFound().build(); // Handle case when property is not found
+        }
+
+        return ResponseEntity.ok(approvedProperty);
+    }
+
+
+    @PutMapping("/{propertyId}/reject")
+    public ResponseEntity<Property> rejectProperty(@PathVariable Long propertyId, @RequestBody RejectionRequest rejectionRequest) {
+        Property rejectedProperty = propertyService.rejectProperty(propertyId, rejectionRequest.getRejectionReason());
+
+        if (rejectedProperty == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(rejectedProperty);
     }
 
     @GetMapping("/getAll")

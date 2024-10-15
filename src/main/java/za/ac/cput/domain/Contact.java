@@ -8,12 +8,13 @@ public class Contact {
     @Id
     private String email;
     private String phoneNumber;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumns({
-            @JoinColumn(name = "street", referencedColumnName = "street"),
-            @JoinColumn(name = "postalCode", referencedColumnName = "postalCode")
-    })
+
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+
+    @OneToOne(mappedBy = "contact")
+    private User user;
+
 
     public Contact() {
     }

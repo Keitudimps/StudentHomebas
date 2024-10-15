@@ -5,6 +5,6 @@ import za.ac.cput.service.IService;
 
 import java.util.List;
 
-public interface IPropertyService extends IService<Property, String> {
+public interface IPropertyService extends IService<Property, Long> {
     List<Property> getAll();
 }

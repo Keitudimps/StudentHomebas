@@ -7,6 +7,8 @@ import za.ac.cput.domain.AddressId;
 import za.ac.cput.repository.AddressRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class AddressService implements IAddressService {
     @Autowired
@@ -18,11 +20,25 @@ public class AddressService implements IAddressService {
 
     @Override
     public Address save(Address address) {
-        return addressRepository.save(address);
+
+        if (address != null) {
+            System.out.println("checking if existing address exists");
+           // AddressId addressId = new AddressId(address.getStreet(), address.getPostalCode());
+            Optional<Address> existingAddress = addressRepository.findById(address.getAddressID());
+            if (existingAddress.isPresent()) {
+                System.out.println("found address");
+                address = existingAddress.get();
+            } else {
+                System.out.println("saving new address");
+                address = addressRepository.save(address);
+                System.out.println("Saved");
+            }
+        }
+        return address;
     }
 
     @Override
-    public Address read(AddressId o) {
+    public Address read(Long o) {
         return addressRepository.findById(o).orElse(null);
     }
 
@@ -32,7 +48,7 @@ public class AddressService implements IAddressService {
     }
 
     @Override
-    public boolean deleteById(AddressId o) {
+    public boolean deleteById(Long o) {
         addressRepository.deleteById(o);
         return !addressRepository.existsById(o);
     }

@@ -19,10 +19,10 @@ public class AddressController {
         return addressService.save(address);
     }
 
-    @GetMapping("/read/{street}/{postalCode}")
-    public Address read(@PathVariable String street, @PathVariable String postalCode) {
-        AddressId addressId = new AddressId(street,postalCode);
-        return addressService.read(addressId);
+    @GetMapping("/read/{l}")
+    public Address read(@PathVariable("l") Long l) {
+       // AddressId addressId = new AddressId(street,postalCode);
+        return addressService.read(l);
     }
 
     @PostMapping("/update")
@@ -30,9 +30,9 @@ public class AddressController {
         return addressService.save(address);
     }
 
-    @DeleteMapping("/delete/{AddressId}")
-    public boolean delete(@PathVariable AddressId AddressId) {
-        return addressService.deleteById(AddressId);
+    @DeleteMapping("/delete/{l}")
+    public boolean delete(@PathVariable("l") Long l) {
+        return addressService.deleteById(l);
     }
 
     @GetMapping("/getall")

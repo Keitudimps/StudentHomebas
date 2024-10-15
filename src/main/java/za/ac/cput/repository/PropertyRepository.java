@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import za.ac.cput.domain.Property;
 
 @Repository
-public interface PropertyRepository extends JpaRepository<Property,String> {
+public interface PropertyRepository extends JpaRepository<Property,Long> {
 
 }

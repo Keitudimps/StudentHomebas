@@ -14,10 +14,10 @@ import java.util.Objects;
 @Entity
 public class StudentApplication extends Application {
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Student student;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Property property;
     private double price;
 
@@ -74,7 +74,7 @@ public class StudentApplication extends Application {
 
     public static class Builder{
         private LocalDate date;
-        private Status status;
+        private String status;
 
         private Student student;
         private Property property;
@@ -85,7 +85,7 @@ public class StudentApplication extends Application {
             return this;
         }
 
-        public Builder setStatus(Status status) {
+        public Builder setStatus(String status) {
             this.status = status;
             return this;
         }

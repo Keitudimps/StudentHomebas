@@ -10,18 +10,17 @@ import java.util.Objects;
  * Date : 22 April 2024
  * */
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public abstract class Application {
 
     public enum Status{
         Pending, Accepted, Rejected;
     }
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected long appNo;
     protected LocalDate date;
-    protected Status status;
+    protected String status;
 
     public Application(){}
 
@@ -34,7 +33,7 @@ public abstract class Application {
         return date;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -52,12 +51,11 @@ public abstract class Application {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Application that = (Application) o;
-        return Objects.equals(appNo, that.appNo) && Objects.equals(date, that.date) && status == that.status;
+        return appNo == that.appNo && Objects.equals(date, that.date) && Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(appNo, date, status);
     }
-
 }

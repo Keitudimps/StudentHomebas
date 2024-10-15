@@ -13,16 +13,13 @@ import java.util.Objects;
 @Entity
 public class PropertyListingApplication extends Application {
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Property property;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Landlord landlord;
     private double rentalPrice;
     private String location;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Address address;
 
     public PropertyListingApplication(){}
 
@@ -33,7 +30,6 @@ public class PropertyListingApplication extends Application {
         this.landlord = builder.landlord;
         this.rentalPrice = builder.rentalPrice;
         this.location = builder.location;
-        this.address = builder.address;
     }
 
     public Property getProperty() {
@@ -52,22 +48,18 @@ public class PropertyListingApplication extends Application {
         return location;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         PropertyListingApplication that = (PropertyListingApplication) o;
-        return Double.compare(rentalPrice, that.rentalPrice) == 0 && Objects.equals(property, that.property) && Objects.equals(landlord, that.landlord) && Objects.equals(location, that.location) && Objects.equals(address, that.address);
+        return Double.compare(rentalPrice, that.rentalPrice) == 0 && Objects.equals(property, that.property) && Objects.equals(landlord, that.landlord) && Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), property, landlord, rentalPrice, location, address);
+        return Objects.hash(super.hashCode(), property, landlord, rentalPrice, location);
     }
 
     @Override
@@ -77,7 +69,6 @@ public class PropertyListingApplication extends Application {
                 ", landlord='" + landlord + '\'' +
                 ", rentalPrice=" + rentalPrice +
                 ", location='" + location + '\'' +
-                ", address='" + address + '\'' +
                 ", appNo='" + appNo + '\'' +
                 ", date=" + date +
                 ", status=" + status +
@@ -86,19 +77,18 @@ public class PropertyListingApplication extends Application {
 
     public static class Builder{
         private LocalDate date;
-        private Status status;
+        private String status;
         private Property property;
         private Landlord landlord;
         private double rentalPrice;
         private String location;
-        private Address address;
 
         public Builder setDate(LocalDate date) {
             this.date = date;
             return this;
         }
 
-        public Builder setStatus(Status status) {
+        public Builder setStatus(String status) {
             this.status = status;
             return this;
         }
@@ -123,11 +113,6 @@ public class PropertyListingApplication extends Application {
             return this;
         }
 
-        public Builder setAddress(Address address) {
-            this.address = address;
-            return this;
-        }
-
         public Builder copy (PropertyListingApplication propertyApp){
             this.date = propertyApp.date;
             this.status = propertyApp.status;
@@ -135,7 +120,6 @@ public class PropertyListingApplication extends Application {
             this.landlord = propertyApp.landlord;
             this.rentalPrice = propertyApp.rentalPrice;
             this.location = propertyApp.location;
-            this.address = propertyApp.address;
             return this;
         }
 

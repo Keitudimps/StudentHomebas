@@ -26,7 +26,7 @@ public class StudentApplicationFactory {
 
         return new StudentApplication.Builder()
                 .setDate(date)
-                .setStatus(Application.Status.valueOf(status))
+                .setStatus(status)
                 .setStudent(student)
                 .setProperty(property)
                 .setPrice(price)

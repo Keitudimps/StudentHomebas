@@ -29,6 +29,12 @@ class AddressControllerTest {
     static Address address2;
     static Address address3;
 
+    static Address saved_address1;
+    static Address saved_address2;
+    static Address saved_address3;
+
+
+
     @BeforeAll
     static void setUp() {
         address1 = AddressFactory.buildAddress("9 Lower Street", "Mowbray", "Cape Town", "5100");
@@ -46,27 +52,29 @@ class AddressControllerTest {
         System.out.println("Address saved:");
         System.out.println(postResponse.getBody());
 
+        saved_address1 = postResponse.getBody();
+
     }
 
     @Test
     @Order(2)
     void read() {
-        String url = BASE_URL + "/read/" + address1.getStreet() +"/" + address1.getPostalCode();
+        String url = BASE_URL + "/read/" + saved_address1.getAddressID();
         System.out.println(url);
         ResponseEntity<Address> response = testRestTemplate.getForEntity(url, Address.class);
         System.out.println(response.getBody());
         assertNotNull(response);
 
         assertNotNull(response.getBody());
-        assertEquals(response.getBody().getStreet(), address1.getStreet());
-        System.out.println(response.getBody());
+        assertEquals(response.getBody().getStreet(), saved_address1.getStreet());
+
     }
 
     @Test
     @Order(3)
     void update() {
         String url = BASE_URL + "/update";
-        Address newAddress = new Address.AddressBuilder().copy(address1).setSuburb("Observatory").buildAddress();
+        Address newAddress = new Address.AddressBuilder().copy(saved_address1).setSuburb("Observatory").buildAddress();
         ResponseEntity<Address> postResponse = testRestTemplate.postForEntity(url, newAddress, Address.class);
         assertNotNull(postResponse);
         assertNotNull(postResponse.getBody());
@@ -77,8 +85,9 @@ class AddressControllerTest {
     @Test
     @Order(4)
     void delete() {
-        AddressId addressId = new AddressId(address1.getStreet(), address1.getPostalCode());
-        String url = BASE_URL + "/delete/" + addressId;
+       // AddressId addressId = new AddressId(address1.getStreet(), address1.getPostalCode());
+        String url = BASE_URL + "/delete/" + saved_address1.getAddressID();
+        System.out.println("Delete Url: " + url);
         testRestTemplate.delete(url);
         System.out.println("Address Deleted successfully");
     }

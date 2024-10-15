@@ -14,24 +14,22 @@ public class PropertyListingApplicationFactory {
     public static PropertyListingApplication propertyApp(LocalDate date,
                                                          String status, Property property,
                                                          Landlord landlord, double rentalPrice,
-                                                         String location, Address address){
+                                                         String location){
         if (Helper.isInvalidDate(date) ||
             Helper.isNullOrEmpty(status) ||
             Helper.isObjectNull(property) ||
             Helper.isObjectNull(landlord) ||
             Helper.invalidDouble(rentalPrice) ||
-            Helper.isNullOrEmpty(location) ||
-            Helper.isObjectNull(address))
+            Helper.isNullOrEmpty(location))
             return null;
 
         return new PropertyListingApplication.Builder()
                 .setDate(date)
-                .setStatus(Application.Status.valueOf(status))
+                .setStatus(status)
                 .setProperty(property)
                 .setLandlord(landlord)
                 .setRentalPrice(rentalPrice)
                 .setLocation(location)
-                .setAddress(address)
                 .build();
     }
 }

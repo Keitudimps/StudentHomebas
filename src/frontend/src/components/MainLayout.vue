@@ -26,7 +26,7 @@
       <aside class="text-white p-4 sidebar" style="width: 250px;">
         <ul class="nav flex-column">
           <li class="nav-item mb-3">
-            <router-link class="nav-link text-white" to="/admin-dashboard" exact-active-class="active">
+            <router-link class="nav-link text-white" to="/" exact-active-class="active">
               <i class="bi bi-grid"></i> Dashboard
             </router-link>
           </li>
@@ -41,8 +41,13 @@
             </router-link>
           </li>
           <li class="nav-item mb-3">
-            <router-link class="nav-link text-white" to="/student-details" exact-active-class="active">
-              <i class="bi bi-people"></i> Student Details
+            <router-link class="nav-link text-white" to="/landlord-inbox" exact-active-class="active">
+              <i class="bi bi-people"></i> Landlord Inbox
+            </router-link>
+          </li>
+          <li class="nav-item mb-3">
+            <router-link class="nav-link text-white" to="/student-inbox" exact-active-class="active">
+              <i class="bi bi-people"></i> Student Inbox
             </router-link>
           </li>
         </ul>

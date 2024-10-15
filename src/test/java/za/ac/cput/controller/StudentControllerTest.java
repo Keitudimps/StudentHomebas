@@ -128,6 +128,23 @@ class StudentControllerTest {
         System.out.println("All Students");
         System.out.println(response.getBody());
     }
+
+    @Test
+    @Order(6)
+    void login() {
+        String url = BASE_URL + "/login";
+        Student loginRequest = new Student.StudentBuilder().copy(student1).build(); // Using student1's email and password for login
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Student> request = new HttpEntity<>(loginRequest, headers);
+
+        ResponseEntity<String> response = testRestTemplate.postForEntity(url, request, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        System.out.println(response.getBody());
+        assertEquals("Login successful", response.getBody());
+        System.out.println("Login Test Response: " + response.getBody());
+    }
     @Test
     @Order(6)
     void authenticate_success() {

@@ -1,18 +1,7 @@
 <template>
-  <div class="login-page">
-    <nav class="navbar">
-      <div class="logo-container">
-        <img src="@/assets/logo.png" alt="Logo" class="logo" />
-      </div>
-      <div class="nav-links">
-        <a href="#">Home</a>
-        <a href="#">About Us</a>
-      </div>
-      <div class="profile-container">
-      </div>
-    </nav>
-
+  <div class="login-overlay">
     <div class="login-container">
+      <button class="close-button" @click="$emit('close')">✖</button>
       <form class="login-form" @submit.prevent="login">
         <div class="form-group">
           <label for="email">Email</label>
@@ -65,124 +54,77 @@ export default {
     return {
       email: "",
       password: "",
-      rememberMe: false,
+      rememberMe: false
     };
   },
   methods: {
-    login() {
-      alert('login clicked');
-      alert(this.email);
-      alert(this.password);
-      fetch("api/StudentHomeBas/Student/login/" + this.email+ "/" + this.password, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+    async login() {
+      const url = 'api/StudentHomeBas/student/login/' + this.email + "/" + this.password;
+
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.text(); // Assuming the response is a text message
+          alert("Login successful: " + data);
+          console.log('Login successful:', data);
+          this.$emit('authenticated');
+         //await this.$router.push('/admin-layout');
+        } else {
+          const errorMessage = await response.text();
+          alert("Login failed: " + errorMessage);
+          console.error('Login failed:', errorMessage);
         }
-      })
-          .then((response) => {
-            alert(response.status);
-            if (response.status === 200) {
-              alert(response.text())
-              return response.text(); // Parse the response as text
-            } else {
-              alert('Invalid Email or Password.')
-              throw new Error('Invalid Email or Password.');
-            }
-          })
-          .then((data) => {
-            if (data) {
-              this.loginError = data;
-              alert(data); // Shows 'Login successful!'
-              // Redirect or handle successful login
-            } else {
-              alert("Invalid Email or Password.");
-              this.loginError = 'Invalid Email or Password.';
-            }
-          })
-          .catch((error) => {
-            this.loginError = 'Error during login. Please try again later.';
-            console.error('There was a problem with the fetch operation:', error);
-          });
+      } catch (error) {
+        alert("Error during login: " + error.message);
+        console.error('Error during login:', error);
+      }
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-.login-page {
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  background: url('@/assets/bedroom.png') no-repeat center center;
-  background-size: cover;
-  display: flex;
-  flex-direction: column;
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: white;
-  border-bottom: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
+.login-overlay {
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Darkened background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
 }
 
-.logo-container {
-  flex-grow: 0;
-}
-
-.logo {
-  width: auto;
-  height: 50px;
-}
-
-.nav-links {
-  flex-grow: 2;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-}
-
-.profile-container {
-  flex-grow: 1;
-  text-align: right;
-}
-
-.profile-pic {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  padding-right: 60px;
-}
-
 .login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Move the container towards the top */
-  padding-top: 200px; /* Adjust this value to move the container up or down */
-  width: 30%;
-  margin: 0 auto;
-}
-
-.login-form {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: white;
   padding: 40px;
   border-radius: 8px;
   width: 100%;
+  max-width: 400px; /* Adjust as needed */
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group {
@@ -199,7 +141,6 @@ export default {
   padding-right: 30px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
 }
 
 .input-container i {
@@ -207,21 +148,6 @@ export default {
   top: 10px;
   right: 10px;
   color: #888;
-}
-
-.form-group-remember {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.remember-me-container {
-  display: flex;
-  align-items: center;
-}
-
-.remember-me-container input {
-  margin-right: 5px;
 }
 
 .btn-login {

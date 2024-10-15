@@ -9,8 +9,12 @@ import java.util.Objects;
 public class Landlord extends User{
 
     private int numOfPropertiesOwned;
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "landlord" , fetch = FetchType.EAGER)
     private List<Document> documents;
+
+    @OneToMany(mappedBy = "landlord")
+    List<Property> property;
 
     protected Landlord() {
 
@@ -39,9 +43,8 @@ public class Landlord extends User{
     @Override
     public String toString() {
         return "Landlord{" +
-                "numOfPropertiesOwned=" + numOfPropertiesOwned +
-                ", documents=" + documents +
                 ", userId=" + userId +
+                ", numOfPropertiesOwned=" + numOfPropertiesOwned +
                 ", name=" + name +
                 ", gender='" + gender + '\'' +
                 ", dateOfBirth=" + dateOfBirth +

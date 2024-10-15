@@ -46,24 +46,21 @@ public class StudentController {
         return studentService.getall();
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
-        Student authenticatedStudent = studentService.authenticationByEmail(request.getEmail(), request.getPassword());
-        if (authenticatedStudent != null) {
-            return ResponseEntity.ok(authenticatedStudent);
-        } else {
-            return ResponseEntity.status(401).body("Authentication Failed");
-        }
-
-    }
     @GetMapping("/login/{email}/{password}")
     public ResponseEntity<String> login(@PathVariable("email") String email, @PathVariable("password") String password) {
-        Student Authenticated = studentService.authenticationByEmail(email, password);
-        if (Authenticated!=null) {
-            return ResponseEntity.ok("Login successful!");
+
+        if (email ==null || email.isEmpty()) {
+            return new ResponseEntity<>("email is null" + email, HttpStatus.BAD_REQUEST);
+        }
+
+        Student authenticatedStudent = studentService.authenticationByEmail(email, password);
+
+        if (authenticatedStudent != null) {
+            return new ResponseEntity<>("Login successful", HttpStatus.OK);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Customer ID or Password");
+            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
         }
     }
+
 }
 

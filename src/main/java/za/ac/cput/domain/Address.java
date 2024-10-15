@@ -1,21 +1,22 @@
 package za.ac.cput.domain;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 @Entity
-@IdClass(AddressId.class)
 public class Address {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long addressID;
     private String street;
     private String suburb;
     private String city;
-    @Id
+
     private String postalCode;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Contact contact;
 
     protected Address(){}
 
@@ -41,6 +42,9 @@ public class Address {
     public String getPostalCode() {
         return postalCode;
     }
+    public long getAddressID() {
+        return addressID;
+    }
 
     @Override
     public String toString() {
@@ -65,7 +69,7 @@ public class Address {
     }
 
     public static class AddressBuilder{
-
+        private long addressID;
         private String street;
         private String suburb;
         private String city;
@@ -92,6 +96,7 @@ public class Address {
             return this;
         }
         public AddressBuilder copy(Address address){
+            this.addressID = address.addressID;
             this.street = address.street;
             this.suburb = address.suburb;
             this.city = address.city;

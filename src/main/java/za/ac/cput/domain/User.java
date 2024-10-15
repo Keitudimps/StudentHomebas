@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type")
@@ -20,7 +19,7 @@ public  class User {
     protected LocalDate dateOfBirth;
     protected String password;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "contact_id")
     protected Contact contact;
 

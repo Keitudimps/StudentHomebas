@@ -6,5 +6,5 @@ import za.ac.cput.domain.Address;
 import za.ac.cput.domain.AddressId;
 
 @Repository
-public interface AddressRepository extends JpaRepository<Address, AddressId> {
+public interface AddressRepository extends JpaRepository<Address, Long> {
 }
